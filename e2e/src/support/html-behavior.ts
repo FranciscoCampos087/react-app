@@ -106,3 +106,38 @@ export const scrollIntoView = async (
 ): Promise<void> => {
   const element = page.locator(elementIdentifier).scrollIntoViewIfNeeded();
 };
+
+export const elementChecked = async (
+  page: Page,
+  elementIdentifier: ElementLocator
+): Promise<boolean | null> => {
+  const checked = await page.isChecked(elementIdentifier);
+  return checked;
+};
+
+export const getElementText = async (
+  page: Page,
+  elementIdentifier: ElementLocator
+): Promise<string | null> => {
+  const text = await page.textContent(elementIdentifier);
+  return text;
+};
+
+export const elementEnabled = async (
+  page: Page,
+  elementIdentifier: ElementLocator
+): Promise<boolean | null> => {
+  const enabled = await page.isEnabled(elementIdentifier);
+  return enabled;
+};
+
+export const getElementTextAtIndex = async (
+  page: Page,
+  elementIdentifier: ElementLocator,
+  index: number
+): Promise<string | null> => {
+  const textAtIndex = await page.textContent(
+    `${elementIdentifier}>>nth=${index}`
+  );
+  return textAtIndex;
+};
