@@ -1,26 +1,28 @@
 import { Then } from "@cucumber/cucumber";
 import { ScenarioWorld } from "./setup/world";
-import { waitFor } from "../support/wait-for-behavior";
+import { waitFor, waitForSelector } from "../support/wait-for-behavior";
 import { getElementLocator } from "../support/web-element-helper";
-import { ElementKey } from "../env/global"
+import { ElementKey } from "../env/global";
 import { scrollIntoView } from "../support/html-behavior";
 
 Then(
   /^I scroll to the "([^"]*)"$/,
-  async function(this: ScenarioWorld, elementKey: ElementKey) {
+  async function (this: ScenarioWorld, elementKey: ElementKey) {
     const {
       screen: { page },
-      globalConfig
+      globalConfig,
     } = this;
 
-    const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
+    const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
     await waitFor(async () => {
-      const result = await page.waitForSelector(elementIdentifier, {state: 'visible'})
-      if (result) {
-        await scrollIntoView(page, elementIdentifier)
+      const elementStable = await waitForSelector(page, elementIdentifier);
+
+      if (elementStable) {
+        await scrollIntoView(page, elementIdentifier);
       }
-      return result
-    })
+
+      return elementStable;
+    });
   }
-)
+);

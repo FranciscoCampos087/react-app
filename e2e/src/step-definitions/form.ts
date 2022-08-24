@@ -1,5 +1,5 @@
 import { Then } from "@cucumber/cucumber";
-import { waitFor } from "../support/wait-for-behavior";
+import { waitFor, waitForSelector } from "../support/wait-for-behavior";
 import { getElementLocator } from "../support/web-element-helper";
 import { ScenarioWorld } from "./setup/world";
 import { ElementKey } from "../env/global";
@@ -7,53 +7,51 @@ import { inputValue, selectValue } from "../support/html-behavior";
 import { parseInput } from "../support/input-helper";
 import { logger } from "../logger";
 
-Then (
+Then(
   /^I fill in the "([^"]*)" input with "([^"]*)"$/,
-  async function(this: ScenarioWorld, elementKey: ElementKey, input: string){
+  async function (this: ScenarioWorld, elementKey: ElementKey, input: string) {
     const {
       screen: { page },
-      globalConfig
-    } = this
+      globalConfig,
+    } = this;
 
-    logger.log(`I fill in the ${elementKey} input with ${input}`)
+    logger.log(`I fill in the ${elementKey} input with ${input}`);
 
-    const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
+    const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
     await waitFor(async () => {
-      const result = await page.waitForSelector(elementIdentifier, {
-        state: 'visible'
-      })
+      const elementStable = await waitForSelector(page, elementIdentifier);
 
-      if (result) {
-        const pasedInput = parseInput(input, globalConfig)
-        await inputValue(page, elementIdentifier, pasedInput)
+      if (elementStable) {
+        const pasedInput = parseInput(input, globalConfig);
+        await inputValue(page, elementIdentifier, pasedInput);
       }
-      return result;
-    })
-  }
-)
 
-Then (
+      return elementStable;
+    });
+  }
+);
+
+Then(
   /^I select the "([^"]*)" option from the "([^"]*)"$/,
-  async function(this: ScenarioWorld, option: string, elementKey: ElementKey){
+  async function (this: ScenarioWorld, option: string, elementKey: ElementKey) {
     const {
       screen: { page },
-      globalConfig
-    } = this
+      globalConfig,
+    } = this;
 
-    logger.log(`I select the ${option} option from the ${elementKey}`)
+    logger.log(`I select the ${option} option from the ${elementKey}`);
 
-    const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
+    const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
     await waitFor(async () => {
-      const result = await page.waitForSelector(elementIdentifier, {
-        state: 'visible'
-      })
+      const elementStable = await waitForSelector(page, elementIdentifier);
 
-      if (result) {
-        await selectValue(page, elementIdentifier, option)
+      if (elementStable) {
+        await selectValue(page, elementIdentifier, option);
       }
-      return result;
-    })
+
+      return elementStable;
+    });
   }
-)
+);
