@@ -25,7 +25,6 @@ Then(
     await waitFor(async () => {
       let pages = context.pages();
       const elementStable = await waitForSelectorOnPage(
-        page,
         elementIdentifier,
         pages,
         pageIndex

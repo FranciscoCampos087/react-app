@@ -8,7 +8,7 @@ import {
   getAttributeText,
   getElementText,
   getElementTextAtIndex,
-  getValue,
+  getElementValue,
 } from "../../support/html-behavior";
 import { logger } from "../../logger";
 
@@ -86,7 +86,7 @@ Then(
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
     await waitFor(async () => {
-      const elementAttribute = await getValue(page, elementIdentifier);
+      const elementAttribute = await getElementValue(page, elementIdentifier);
       return elementAttribute?.includes(expectedElementValue) === !negate;
     });
   }
@@ -111,7 +111,7 @@ Then(
       const elementStable = await waitForSelector(page, elementIdentifier);
 
       if (elementStable) {
-        const elementAttribute = await getValue(page, elementIdentifier);
+        const elementAttribute = await getElementValue(page, elementIdentifier);
         return (elementAttribute === expectedElementValue) === !negate;
       } else {
         return elementStable;
