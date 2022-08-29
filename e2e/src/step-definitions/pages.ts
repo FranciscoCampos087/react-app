@@ -22,19 +22,28 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      let pages = context.pages();
-      const elementStable = await waitForSelectorOnPage(
-        elementIdentifier,
-        pages,
-        pageIndex
-      );
+    await waitFor(
+      async () => {
+        let pages = context.pages();
+        const elementStable = await waitForSelectorOnPage(
+          elementIdentifier,
+          pages,
+          pageIndex
+        );
 
-      if (elementStable) {
-        await inputValueOnPage(pages, pageIndex, elementIdentifier, inputValue);
-      }
+        if (elementStable) {
+          await inputValueOnPage(
+            pages,
+            pageIndex,
+            elementIdentifier,
+            inputValue
+          );
+        }
 
-      return elementStable;
-    });
+        return elementStable;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );

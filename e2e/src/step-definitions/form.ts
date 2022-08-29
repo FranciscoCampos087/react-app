@@ -22,16 +22,20 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      const elementStable = await waitForSelector(page, elementIdentifier);
+    await waitFor(
+      async () => {
+        const elementStable = await waitForSelector(page, elementIdentifier);
 
-      if (elementStable) {
-        const pasedInput = parseInput(input, globalConfig);
-        await inputElementValue(page, elementIdentifier, pasedInput);
-      }
+        if (elementStable) {
+          const pasedInput = parseInput(input, globalConfig);
+          await inputElementValue(page, elementIdentifier, pasedInput);
+        }
 
-      return elementStable;
-    });
+        return elementStable;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );
 
@@ -47,14 +51,18 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      const elementStable = await waitForSelector(page, elementIdentifier);
+    await waitFor(
+      async () => {
+        const elementStable = await waitForSelector(page, elementIdentifier);
 
-      if (elementStable) {
-        await selectElementValue(page, elementIdentifier, option);
-      }
+        if (elementStable) {
+          await selectElementValue(page, elementIdentifier, option);
+        }
 
-      return elementStable;
-    });
+        return elementStable;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );

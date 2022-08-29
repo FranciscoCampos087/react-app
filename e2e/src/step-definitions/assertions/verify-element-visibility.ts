@@ -19,11 +19,15 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      const isElementVisible =
-        (await getElement(page, elementIdentifier)) != null;
-      return isElementVisible === !negate;
-    });
+    await waitFor(
+      async () => {
+        const isElementVisible =
+          (await getElement(page, elementIdentifier)) != null;
+        return isElementVisible === !negate;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );
 
@@ -44,11 +48,15 @@ Then(
 
     const index = Number(elementPosition.match(/\d/g)?.join("")) - 1;
 
-    await waitFor(async () => {
-      const isElementVisible =
-        (await getElementAtIndex(page, elementIdentifier, index)) != null;
-      return isElementVisible === !negate;
-    });
+    await waitFor(
+      async () => {
+        const isElementVisible =
+          (await getElementAtIndex(page, elementIdentifier, index)) != null;
+        return isElementVisible === !negate;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );
 
@@ -67,9 +75,13 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      const element = await getElements(page, elementIdentifier);
-      return (Number(count) === element.length) === !negate;
-    });
+    await waitFor(
+      async () => {
+        const element = await getElements(page, elementIdentifier);
+        return (Number(count) === element.length) === !negate;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );

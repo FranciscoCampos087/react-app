@@ -19,18 +19,22 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      const elementStable = await waitForSelector(page, elementIdentifier);
+    await waitFor(
+      async () => {
+        const elementStable = await waitForSelector(page, elementIdentifier);
 
-      if (elementStable) {
-        const elementText = await page.textContent(elementIdentifier);
+        if (elementStable) {
+          const elementText = await page.textContent(elementIdentifier);
 
-        if (elementText != null) {
-          globalVariables[variableKey] = elementText;
+          if (elementText != null) {
+            globalVariables[variableKey] = elementText;
+          }
         }
-      }
 
-      return elementStable;
-    });
+        return elementStable;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );

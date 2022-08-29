@@ -20,18 +20,22 @@ When(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      const elementStable = await waitForSelector(page, elementIdentifier);
+    await waitFor(
+      async () => {
+        const elementStable = await waitForSelector(page, elementIdentifier);
 
-      if (elementStable) {
-        if (!!unchecked) {
-          await uncheckElement(page, elementIdentifier);
-        } else {
-          await checkElement(page, elementIdentifier);
+        if (elementStable) {
+          if (!!unchecked) {
+            await uncheckElement(page, elementIdentifier);
+          } else {
+            await checkElement(page, elementIdentifier);
+          }
         }
-      }
 
-      return elementStable;
-    });
+        return elementStable;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );

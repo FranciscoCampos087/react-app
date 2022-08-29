@@ -22,6 +22,7 @@ Then(
   ) {
     const {
       screen: { page, context },
+      globalConfig,
     } = this;
 
     const pageIndex = Number(elementPosition.match(/\d/g)?.join("")) - 1;
@@ -29,11 +30,15 @@ Then(
     //Should be the only waitForTimeout in the code because there's no native way to assert correctly on a new tab
     await page.waitForTimeout(2000);
 
-    await waitFor(async () => {
-      let pages = context.pages();
-      const pageTitle = await getTitleWithinPage(pages, pageIndex);
-      return pageTitle?.includes(expectedTitle) === !negate;
-    });
+    await waitFor(
+      async () => {
+        let pages = context.pages();
+        const pageTitle = await getTitleWithinPage(pages, pageIndex);
+        return pageTitle?.includes(expectedTitle) === !negate;
+      },
+      globalConfig,
+      { type: "title" }
+    );
   }
 );
 
@@ -54,12 +59,17 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      let pages = context.pages();
-      const isElementVisible =
-        (await getElemenhtOnPage(elementIdentifier, pages, pageIndex)) != null;
-      return isElementVisible === !negate;
-    });
+    await waitFor(
+      async () => {
+        let pages = context.pages();
+        const isElementVisible =
+          (await getElemenhtOnPage(elementIdentifier, pages, pageIndex)) !=
+          null;
+        return isElementVisible === !negate;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );
 
@@ -81,26 +91,30 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      let pages = context.pages();
+    await waitFor(
+      async () => {
+        let pages = context.pages();
 
-      const elementStable = await waitForSelectorOnPage(
-        elementIdentifier,
-        pages,
-        pageIndex
-      );
-
-      if (elementStable) {
-        const elementText = await getElementTextWithinPage(
+        const elementStable = await waitForSelectorOnPage(
           elementIdentifier,
           pages,
           pageIndex
         );
-        return elementText?.includes(expectedElementText) === !negate;
-      } else {
-        return elementStable;
-      }
-    });
+
+        if (elementStable) {
+          const elementText = await getElementTextWithinPage(
+            elementIdentifier,
+            pages,
+            pageIndex
+          );
+          return elementText?.includes(expectedElementText) === !negate;
+        } else {
+          return elementStable;
+        }
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );
 
@@ -122,25 +136,29 @@ Then(
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
-    await waitFor(async () => {
-      let pages = context.pages();
+    await waitFor(
+      async () => {
+        let pages = context.pages();
 
-      const elementStable = await waitForSelectorOnPage(
-        elementIdentifier,
-        pages,
-        pageIndex
-      );
-
-      if (elementStable) {
-        const elementText = await getElementTextWithinPage(
+        const elementStable = await waitForSelectorOnPage(
           elementIdentifier,
           pages,
           pageIndex
         );
-        return (elementText === expectedElementText) === !negate;
-      } else {
-        return elementStable;
-      }
-    });
+
+        if (elementStable) {
+          const elementText = await getElementTextWithinPage(
+            elementIdentifier,
+            pages,
+            pageIndex
+          );
+          return (elementText === expectedElementText) === !negate;
+        } else {
+          return elementStable;
+        }
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );

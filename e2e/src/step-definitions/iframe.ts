@@ -26,22 +26,26 @@ Then(
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
     const iframeIdentifier = getElementLocator(page, iframeName, globalConfig);
 
-    await waitFor(async () => {
-      const iframeStable = await waitForSelector(page, iframeIdentifier);
+    await waitFor(
+      async () => {
+        const iframeStable = await waitForSelector(page, iframeIdentifier);
 
-      if (iframeStable) {
-        const elementIframe = await getIframeElement(page, iframeIdentifier);
+        if (iframeStable) {
+          const elementIframe = await getIframeElement(page, iframeIdentifier);
 
-        if (elementIframe) {
-          await inputValueOnIframe(
-            elementIframe,
-            elementIdentifier,
-            inputValue
-          );
+          if (elementIframe) {
+            await inputValueOnIframe(
+              elementIframe,
+              elementIdentifier,
+              inputValue
+            );
+          }
         }
-      }
 
-      return iframeStable;
-    });
+        return iframeStable;
+      },
+      globalConfig,
+      { target: elementKey }
+    );
   }
 );
