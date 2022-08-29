@@ -2,7 +2,11 @@ import { Then } from "@cucumber/cucumber";
 import { ElementKey } from "../../env/global";
 import { getElementLocator } from "../../support/web-element-helper";
 import { ScenarioWorld } from "../setup/world";
-import { waitFor, waitForSelector } from "../../support/wait-for-behavior";
+import {
+  waitFor,
+  waitForResult,
+  waitForSelector,
+} from "../../support/wait-for-behavior";
 import {
   elementEnabled,
   getAttributeText,
@@ -35,13 +39,24 @@ Then(
           const elementText = await getElementText(page, elementIdentifier);
           logger.debug("elementText: ", elementText);
           logger.debug("expectedElementText: ", expectedElementText);
-          return elementText?.includes(expectedElementText) === !negate;
+
+          if (elementText?.includes(expectedElementText) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }contain the text ${expectedElementText}`,
+      }
     );
   }
 );
@@ -67,13 +82,24 @@ Then(
 
         if (elementStable) {
           const elementText = await getElementText(page, elementIdentifier);
-          return (elementText === expectedElementText) === !negate;
+
+          if ((elementText === expectedElementText) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }equal text ${expectedElementText}`,
+      }
     );
   }
 );
@@ -95,11 +121,31 @@ Then(
 
     await waitFor(
       async () => {
-        const elementAttribute = await getElementValue(page, elementIdentifier);
-        return elementAttribute?.includes(expectedElementValue) === !negate;
+        const elementStable = await waitForSelector(page, elementIdentifier);
+
+        if (elementStable) {
+          const elementAttribute = await getElementValue(
+            page,
+            elementIdentifier
+          );
+
+          if (elementAttribute?.includes(expectedElementValue) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
+        } else {
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
+        }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }contain the value ${expectedElementValue}`,
+      }
     );
   }
 );
@@ -128,13 +174,24 @@ Then(
             page,
             elementIdentifier
           );
-          return (elementAttribute === expectedElementValue) === !negate;
+
+          if ((elementAttribute === expectedElementValue) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }equal the value ${expectedElementValue}`,
+      }
     );
   }
 );
@@ -162,13 +219,24 @@ Then(
             page,
             elementIdentifier
           );
-          return isElementEnabled === !negate;
+
+          if (isElementEnabled === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }be enabled`,
+      }
     );
   }
 );
@@ -201,13 +269,24 @@ Then(
             elementIdentifier,
             index
           );
-          return elementText?.includes(expectedElementText) === !negate;
+
+          if (elementText?.includes(expectedElementText) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementPosition} ${elementKey} to ${
+          negate ? "not " : ""
+        }contain the text ${expectedElementText}`,
+      }
     );
   }
 );
@@ -238,13 +317,24 @@ Then(
             elementIdentifier,
             attribute
           );
-          return attributeText?.includes(expectedElementText) === !negate;
+
+          if (attributeText?.includes(expectedElementText) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }contain the text ${expectedElementText}`,
+      }
     );
   }
 );

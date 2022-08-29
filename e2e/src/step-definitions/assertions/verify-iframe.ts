@@ -1,6 +1,7 @@
 import { Then } from "@cucumber/cucumber";
 import {
   waitFor,
+  waitForResult,
   waitForSelectorInIframe,
 } from "../../support/wait-for-behavior";
 import {
@@ -17,7 +18,7 @@ Then(
   async function (
     this: ScenarioWorld,
     elementKey: ElementKey,
-    iframeName: string,
+    iframeKey: string,
     negate: boolean
   ) {
     const {
@@ -26,7 +27,7 @@ Then(
     } = this;
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
-    const iframeIdentifier = getElementLocator(page, iframeName, globalConfig);
+    const iframeIdentifier = getElementLocator(page, iframeKey, globalConfig);
 
     await waitFor(
       async () => {
@@ -44,14 +45,33 @@ Then(
                 elementIframe,
                 elementIdentifier
               )) != null;
-            return isElementVisible === !negate;
+
+            if (isElementVisible === !negate) {
+              return { result: waitForResult.PASS };
+            } else {
+              return { result: waitForResult.FAIL, replace: elementKey };
+            }
           } else {
-            return elementStable;
+            return {
+              result: waitForResult.ELEMENT_NOT_AVAILABLE,
+              replace: elementKey,
+            };
           }
+        } else {
+          return {
+            result: waitForResult.ELEMENT_NOT_AVAILABLE,
+            replace: iframeKey,
+          };
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }be displayed`,
+      }
     );
   }
 );
@@ -61,7 +81,7 @@ Then(
   async function (
     this: ScenarioWorld,
     elementKey: ElementKey,
-    iframeName: string,
+    iframeKey: string,
     negate: boolean,
     expectedElementText: string
   ) {
@@ -71,7 +91,7 @@ Then(
     } = this;
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
-    const iframeIdentifier = getElementLocator(page, iframeName, globalConfig);
+    const iframeIdentifier = getElementLocator(page, iframeKey, globalConfig);
 
     await waitFor(
       async () => {
@@ -88,14 +108,33 @@ Then(
               elementIframe,
               elementIdentifier
             );
-            return elementText?.includes(expectedElementText) === !negate;
+
+            if (elementText?.includes(expectedElementText) === !negate) {
+              return { result: waitForResult.PASS };
+            } else {
+              return { result: waitForResult.FAIL, replace: elementKey };
+            }
           } else {
-            return elementStable;
+            return {
+              result: waitForResult.ELEMENT_NOT_AVAILABLE,
+              replace: elementKey,
+            };
           }
+        } else {
+          return {
+            result: waitForResult.ELEMENT_NOT_AVAILABLE,
+            replace: iframeKey,
+          };
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }contain the text ${expectedElementText}`,
+      }
     );
   }
 );
@@ -105,7 +144,7 @@ Then(
   async function (
     this: ScenarioWorld,
     elementKey: ElementKey,
-    iframeName: string,
+    iframeKey: string,
     negate: boolean,
     expectedElementText: string
   ) {
@@ -115,7 +154,7 @@ Then(
     } = this;
 
     const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
-    const iframeIdentifier = getElementLocator(page, iframeName, globalConfig);
+    const iframeIdentifier = getElementLocator(page, iframeKey, globalConfig);
 
     await waitFor(
       async () => {
@@ -132,14 +171,33 @@ Then(
               elementIframe,
               elementIdentifier
             );
-            return (elementText === expectedElementText) === !negate;
+
+            if ((elementText === expectedElementText) === !negate) {
+              return { result: waitForResult.PASS };
+            } else {
+              return { result: waitForResult.FAIL, replace: elementKey };
+            }
           } else {
-            return elementStable;
+            return {
+              result: waitForResult.ELEMENT_NOT_AVAILABLE,
+              replace: elementKey,
+            };
           }
+        } else {
+          return {
+            result: waitForResult.ELEMENT_NOT_AVAILABLE,
+            replace: iframeKey,
+          };
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} to ${
+          negate ? "not " : ""
+        }equal the text ${expectedElementText}`,
+      }
     );
   }
 );

@@ -1,6 +1,7 @@
 import { Then } from "@cucumber/cucumber";
 import {
   waitFor,
+  waitForResult,
   waitForSelectorOnPage,
 } from "../../support/wait-for-behavior";
 import { getElementLocator } from "../../support/web-element-helper";
@@ -34,10 +35,21 @@ Then(
       async () => {
         let pages = context.pages();
         const pageTitle = await getTitleWithinPage(pages, pageIndex);
-        return pageTitle?.includes(expectedTitle) === !negate;
+
+        if (pageTitle?.includes(expectedTitle) === !negate) {
+          return waitForResult.PASS;
+        } else {
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
+        }
       },
+
       globalConfig,
-      { type: "title" }
+      {
+        target: expectedTitle,
+        failureMessage: `Expected page to ${
+          negate ? "not " : ""
+        }contain the title ${expectedTitle}`,
+      }
     );
   }
 );
@@ -65,10 +77,21 @@ Then(
         const isElementVisible =
           (await getElemenhtOnPage(elementIdentifier, pages, pageIndex)) !=
           null;
-        return isElementVisible === !negate;
+
+        if (isElementVisible === !negate) {
+          return waitForResult.PASS;
+        } else {
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
+        }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} on page to ${
+          negate ? "not " : ""
+        }be displayed`,
+      }
     );
   }
 );
@@ -107,13 +130,24 @@ Then(
             pages,
             pageIndex
           );
-          return elementText?.includes(expectedElementText) === !negate;
+
+          if (elementText?.includes(expectedElementText) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} on page to ${
+          negate ? "not " : ""
+        }contain the text ${expectedElementText}`,
+      }
     );
   }
 );
@@ -152,13 +186,24 @@ Then(
             pages,
             pageIndex
           );
-          return (elementText === expectedElementText) === !negate;
+
+          if ((elementText === expectedElementText) === !negate) {
+            return waitForResult.PASS;
+          } else {
+            return waitForResult.FAIL;
+          }
         } else {
-          return elementStable;
+          return waitForResult.ELEMENT_NOT_AVAILABLE;
         }
       },
+
       globalConfig,
-      { target: elementKey }
+      {
+        target: elementKey,
+        failureMessage: `Expected ${elementKey} on page to ${
+          negate ? "not " : ""
+        }equal the text ${expectedElementText}`,
+      }
     );
   }
 );

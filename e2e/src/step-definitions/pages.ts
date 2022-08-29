@@ -1,6 +1,10 @@
 import { Then } from "@cucumber/cucumber";
 import { ScenarioWorld } from "./setup/world";
-import { waitFor, waitForSelectorOnPage } from "../support/wait-for-behavior";
+import {
+  waitFor,
+  waitForResult,
+  waitForSelectorOnPage,
+} from "../support/wait-for-behavior";
 import { getElementLocator } from "../support/web-element-helper";
 import { ElementKey } from "../env/global";
 import { inputValueOnPage } from "../support/html-behavior";
@@ -38,10 +42,12 @@ Then(
             elementIdentifier,
             inputValue
           );
+          return waitForResult.PASS;
         }
 
-        return elementStable;
+        return waitForResult.ELEMENT_NOT_AVAILABLE;
       },
+
       globalConfig,
       { target: elementKey }
     );

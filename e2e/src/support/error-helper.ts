@@ -17,7 +17,7 @@ export const parseErrorMessage = (
   return targetErrorIndex > -1
     ? errList[targetErrorIndex].parsedErrMsg
         .replace(/{}/g, targetName)
-        .replace(/{}/g, targetType)
+        .replace(/<>/g, targetType)
     : errorSummary;
 };
 
