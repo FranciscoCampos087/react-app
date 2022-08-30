@@ -7,6 +7,7 @@ import {
 } from "../support/wait-for-behavior";
 import { getElementLocator } from "../support/web-element-helper";
 import { ElementKey } from "../env/global";
+import { getElementText } from "../support/html-behavior";
 
 Then(
   /^I retrieve the "([^"]*)" text and store it as "([^"]*)" in global variables$/,
@@ -28,7 +29,7 @@ Then(
         const elementStable = await waitForSelector(page, elementIdentifier);
 
         if (elementStable) {
-          const elementText = await page.textContent(elementIdentifier);
+          const elementText = await getElementText(page, elementIdentifier);
 
           if (elementText != null) {
             globalVariables[variableKey] = elementText;

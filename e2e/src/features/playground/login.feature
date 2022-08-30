@@ -35,3 +35,11 @@ Feature: As a user I can interact with login forms
       | cam.testingtalks |
       | cam.testingtalks |
       | cam              |
+
+  @smoke @regression
+  Scenario Outline: As a user I am able to input a random email
+    Given I am on the "home" page
+    And I click the "playground" button
+    When I am directed to the "playground" page
+    And I fill in the "email" input with random "email"
+    And I fill in the "password" input with random "password"
