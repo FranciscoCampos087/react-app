@@ -55,5 +55,6 @@
   "email": "[data-id='email']",
   "password": "[data-id='password']",
   "login-button": "[data-id='login-button']",
-  "email error": "[data-id='email-error']"
+  "email error": "[data-id='email-error']",
+  "full name": "[data-id='full-name']"
 }

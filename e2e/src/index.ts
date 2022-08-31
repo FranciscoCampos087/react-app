@@ -7,6 +7,8 @@ import {
   EmailsConfig,
   PageElementMappings,
   ErrorsConfig,
+  MocksConfig,
+  MockPayloadMappings,
 } from "./env/global";
 import * as fs from "fs";
 import { generateCucumberRuntimeTag } from "./support/tag-helper";
@@ -20,8 +22,12 @@ const hostsConfig: HostsConfig = getJsonFromFile(env("HOSTS_URL_PATH"));
 const pagesConfig: PagesConfig = getJsonFromFile(env("PAGE_URL_PATH"));
 const emailsConfig: EmailsConfig = getJsonFromFile(env("EMAILS_URLS_PATH"));
 const errorsConfig: ErrorsConfig = getJsonFromFile(env("ERRORS_URLS_PATH"));
+const mocksConfig: MocksConfig = getJsonFromFile(env("MOCKS_URLS_PATH"));
 const mappingFiles = fs.readdirSync(
   `${process.cwd()}${env("PAGE_ELEMENTS_PATH")}`
+);
+const payloadFiles = fs.readdirSync(
+  `${process.cwd()}${env("MOCK_PAYLOAD_PATH")}`
 );
 
 const getEnvList = (): string[] => {
@@ -45,12 +51,25 @@ const pageElementMappings: PageElementMappings = mappingFiles.reduce(
   {}
 );
 
+const mockPayloadMappings: MockPayloadMappings = payloadFiles.reduce(
+  (payloadConfigAcc, file) => {
+    const key = file.replace(".json", "");
+    const payloadMappings = getJsonFromFile(
+      `${env("MOCK_PAYLOAD_PATH")}${file}`
+    );
+    return { ...payloadConfigAcc, [key]: payloadMappings };
+  },
+  {}
+);
+
 const worldParameters: GlobalConfig = {
   hostsConfig,
   pagesConfig,
   emailsConfig,
   errorsConfig,
+  mocksConfig,
   pageElementMappings,
+  mockPayloadMappings,
 };
 
 const common = `./src/features/**/*.feature \
