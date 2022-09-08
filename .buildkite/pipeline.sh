@@ -9,7 +9,7 @@ function build() {
 steps:
   - name: ":desktop_computer: Automation"
   command: "./scripts/buildkite-automation.sh"
-  artifacts_path:
+  artifact_paths:
     - "./e2e/reports/cucumber-html-report.html"
 EOF
 }
